@@ -1,20 +1,11 @@
 <?php
-require './auth.php';
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+include './controller/auth.php';
 
 if (isset($_POST['login'])) {
     proccessLogin();
 }
 
-if (isset($_SESSION['email'])) {
-    header("Location: home.php");
-}
-
 ?>
-<?php include '../layout/header.php'; ?>
-
 
 <body>
     <!-- Login 8 - Bootstrap Brain Component -->
@@ -81,7 +72,7 @@ if (isset($_SESSION['email'])) {
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-center mt-5">
-                                                    <a href="./register.php" class="link-secondary text-decoration-none">Create new account</a>
+                                                    <a href="./index.php?p=register" class="link-secondary text-decoration-none">Create new account</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -94,7 +85,6 @@ if (isset($_SESSION['email'])) {
             </div>
         </div>
     </section>
-    <?php include '../layout/footer.php' ?>
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>

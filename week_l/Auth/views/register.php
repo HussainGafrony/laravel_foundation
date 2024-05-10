@@ -1,13 +1,13 @@
 <?php
-require './auth.php';
+require './controller/auth.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 if (isset($_POST['register'])) {
     proccessRegister();
 }
-
 ?>
-
-<?php include '../layout/header.php'; ?>
 
 <body>
     <section class="bg-light p-3 p-md-4 p-xl-5">
@@ -68,7 +68,7 @@ if (isset($_POST['register'])) {
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-center mt-5">
-                                                    <a href="./index.php" class="link-secondary text-decoration-none">Or sign in with Email</a>
+                                                    <a href="index.php" class="link-secondary text-decoration-none">Or sign in with Email</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -81,7 +81,6 @@ if (isset($_POST['register'])) {
             </div>
         </div>
     </section>
-    <?php include '../layout/footer.php' ?>
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>

@@ -8,13 +8,14 @@ function proccessLogin()
 
         $validationResult = validateLogin($email, $password);
         if ($validationResult !== true) {
-            header("Location: index.php?msg=" . $validationResult);
+            redirectToLoginPage($validationResult);
+            header("Location: ./index.php?p=login&msg=" . $validationResult);
         } else {
             $_SESSION["email"] = $email;
-            header("Location: home.php");
+            redirectToHomePage();
         }
     } else {
-        header("Location: index.php?msg=404NotFound");
+        redirectToLoginPage("404NotFound");
     }
 }
 
@@ -25,19 +26,19 @@ function proccessRegister()
         $email = $_POST['email'];
         $password = $_POST['password'];
         $file = $_FILES["img"];
-        $uploadDir = '../upload/';
+        $uploadDir = './upload/';
 
         $validationResult = validateRegister($name, $email, $password, $file, $uploadDir);
 
         if ($validationResult !== true) {
-            header("Location: register.php?msg=" . $validationResult);
+            redirectToRegisterPage($validationResult);
         } else {
             $_SESSION["name"] = $name;
             $_SESSION["email"] = $email;
-            header("Location: home.php");
+            redirectToHomePage();
         }
     } else {
-        header("Location: register.php?msg=404NotFound");
+        redirectToRegisterPage("404NotFound");
     }
 }
 
@@ -53,7 +54,7 @@ function handleFileUpload($file, $uploadDir)
     // Generate path for the uploaded file
     $newFileName = uniqid() . "." . explode('/', $file['type'])[1];
     $uploadPath = $uploadDir . $newFileName;
-
+    var_dump($newFileName);
     // Move uploaded file to destination directory
     if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
         return "Failed to move uploaded file.";
@@ -117,5 +118,22 @@ function logout()
 {
     session_unset();
     session_destroy();
-    header("Location: index.php");
+    header("Location: ./index.php");
+}
+function redirectToLoginPage($message)
+{
+    header("Location: ./index.php?p=login&msg=$message");
+    exit();
+}
+
+function redirectToRegisterPage($message)
+{
+    header("Location: ./index.php?p=register&msg=$message");
+    exit();
+}
+
+function redirectToHomePage()
+{
+    header("Location: ./views/home.php");
+    exit();
 }

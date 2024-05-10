@@ -1,12 +1,8 @@
 <?php
-require './auth.php';
+include '../controller/auth.php';
 
 if (isset($_POST['logout'])) {
     logout();
-}
-
-if (!isset($_SESSION['email'])) {
-    header("Location: index.php");
 }
 
 ?>
@@ -22,8 +18,8 @@ if (!isset($_SESSION['email'])) {
 </style>
 
 <body>
-    <section class="vh-100" style="background-color: #f4f5f7;">
-        <div class="container py-5 h-100">
+    <section class="m-auto" style="background-color: #f4f5f7;">
+        <div class="container py-5 ">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col col-lg-6 mb-4 mb-lg-0">
                     <div class="card mb-3" style="border-radius: .5rem;">
@@ -38,7 +34,6 @@ if (!isset($_SESSION['email'])) {
                                     echo "<img src='https://cdn.icon-icons.com/icons2/2643/PNG/512/male_man_people_person_avatar_white_tone_icon_159363.png' alt='Avatar' class='img-fluid my-4' style='width: 100px;'>";
                                 }
                                 ?>
-
                                 <p>Backend Developer</p>
                                 <i class="far fa-edit mb-5"></i>
                             </div>

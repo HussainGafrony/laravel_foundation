@@ -8,5 +8,5 @@
     <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 
     <!-- css -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- <link rel="stylesheet" href="../assets/css/style.css"> -->
 </head>
