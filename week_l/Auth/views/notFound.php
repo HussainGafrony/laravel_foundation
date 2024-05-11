@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php include './layout/header.php'; ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
 
 <body>
-    <h1>Not Found</h1>
+    <h1 class=" text-center py-5">Not Found</h1>
+    <a href="index.php" class="d-block text-center text-decoration-none text-muted">Go To Home Page</a>
 </body>
 
 </html>

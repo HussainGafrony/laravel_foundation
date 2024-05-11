@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 function proccessLogin()
 {
     if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['login'])) {
@@ -9,7 +9,6 @@ function proccessLogin()
         $validationResult = validateLogin($email, $password);
         if ($validationResult !== true) {
             redirectToLoginPage($validationResult);
-            header("Location: ./index.php?p=login&msg=" . $validationResult);
         } else {
             $_SESSION["email"] = $email;
             redirectToHomePage();
@@ -21,25 +20,25 @@ function proccessLogin()
 
 function proccessRegister()
 {
-    if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['register'])) {
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $file = $_FILES["img"];
-        $uploadDir = './upload/';
+    // if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['register'])) {
+    //     $name = $_POST['name'];
+    //     $email = $_POST['email'];
+    //     $password = $_POST['password'];
+    //     $file = $_FILES["img"];
+    //     $uploadDir = './upload/';
 
-        $validationResult = validateRegister($name, $email, $password, $file, $uploadDir);
+    //     $validationResult = validateRegister($name, $email, $password, $file, $uploadDir);
 
-        if ($validationResult !== true) {
-            redirectToRegisterPage($validationResult);
-        } else {
-            $_SESSION["name"] = $name;
-            $_SESSION["email"] = $email;
-            redirectToHomePage();
-        }
-    } else {
-        redirectToRegisterPage("404NotFound");
-    }
+    //     if ($validationResult !== true) {
+    //         redirectToRegisterPage($validationResult);
+    //     } else {
+    //         $_SESSION["name"] = $name;
+    //         $_SESSION["email"] = $email;
+    //         redirectToHomePage();
+    //     }
+    // } else {
+    //     redirectToRegisterPage("404NotFound");
+    // }
 }
 
 
@@ -122,13 +121,13 @@ function logout()
 }
 function redirectToLoginPage($message)
 {
-    header("Location: ./index.php?p=login&msg=$message");
+    header("Location: ?p=login&msg=$message");
     exit();
 }
 
 function redirectToRegisterPage($message)
 {
-    header("Location: ./index.php?p=register&msg=$message");
+    header("Location: ?p=register&msg=$message");
     exit();
 }
 
