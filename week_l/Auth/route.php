@@ -1,32 +1,22 @@
 <?php
-
-$path = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
-
-// $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-// Remove the specific part from the path
-// $path = str_replace("/laravel_foundation/week_l/Auth/", "", $path);
-
-// echo $path;
-
-
 $routes = [
-    '/' => 'controllers/login.php',
-    '/login' => 'controllers/login.php',
-    '/register' => 'controllers/register.php',
+    '/laravel_foundation/week_l/Auth/' => 'register.php',
+    '/laravel_foundation/week_l/Auth/login' => 'login.php',
+    '/laravel_foundation/week_l/Auth/register' => 'register.php',
 ];
+// $url = "/laravel_foundation/week_l/Auth/";
+$url = $_SERVER['REQUEST_URI'];
 
-
-function router($path, $routes)
+function router($url, $routes)
 {
-
-    if (array_key_exists($path, $routes)) {
-        echo $routes[$path];
-        return $routes[$path];
+    if (array_key_exists($url, $routes)) {
+        $action =  $routes[$url];
+        require 'controllers/' . $action;
     } else {
         http_response_code(404);
         require 'controllers/404.php';
     }
 }
 
-router($path, $routes);
+
+router($url, $routes);
