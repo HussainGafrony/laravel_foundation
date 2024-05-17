@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 include './route.php';
 include './layout/header.php';
 
-$page = isset($_GET['p']) ? $_GET['p'] : 'home';
+$page = isset($_GET['p']) ? strip_tags($_GET['p']) : 'home';
 route($page);
 
 include './layout/footer.php';
