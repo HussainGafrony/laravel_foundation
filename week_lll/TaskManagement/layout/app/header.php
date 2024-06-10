@@ -1,3 +1,7 @@
+<?php
+include './function.php'
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,14 +33,6 @@
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
-
-    <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Updated: Apr 20 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -47,7 +43,16 @@
         <div class="d-flex align-items-center justify-content-between">
             <a href="?p=home" class="logo d-flex align-items-center">
                 <img src="assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">UserName</span>
+                <span class="d-none d-lg-block  font-weight-light fs-4">Welcome <b class="fs-3 text-black opacity-50"> <?php
+                                                                                                                        if ($_SESSION['user']['role_name'] === null) {
+                                                                                                                            returnResponse('Please login', true);
+                                                                                                                        } else {
+                                                                                                                            echo $_SESSION['user']['role_name'];
+                                                                                                                        }
+
+                                                                                                                        ?>
+                    </b>
+                </span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -243,12 +248,15 @@
                             <hr class="dropdown-divider">
                         </li>
 
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="./views/login.php">
-                                <i class="bi bi-box-arrow-right"></i>
-                                <span>Sign Out</span>
-                            </a>
-                        </li>
+                        <form action="./logout.php" method="POST">
+
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="controller/logout.php">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Sign Out</span>
+                                </a>
+                            </li>
+                        </form>
 
                     </ul><!-- End Profile Dropdown Items -->
                 </li><!-- End Profile Nav -->
@@ -256,19 +264,44 @@
             </ul>
         </nav><!-- End Icons Navigation -->
 
-    </header><!-- End Header -->
+    </header>
 
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
 
         <ul class="sidebar-nav" id="sidebar-nav">
+            <?php if ($_SESSION['user']['role_name'] === 'admin' || $_SESSION['user']['role_name'] === 'manager') :  ?>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="?p=statistics">
+                        <i class="bi bi-card-list"></i>
+                        <span>Statistics</span>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link " href="?p=team">
-                    <i class="bi bi-grid"></i>
-                    <span>Team</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="?p=employee">
+                        <i class="bi bi-card-list"></i>
+                        <span>Employees</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="?p=task">
+                        <i class="bi bi-card-list"></i>
+                        <span>Taks</span>
+                    </a>
+                </li>
+            <?php endif ?>
+
+            <?php if ($_SESSION['user']['role_name'] === 'admin') :  ?>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="?p=manager">
+                        <i class="bi bi-card-list"></i>
+                        <span>Managers</span>
+                    </a>
+                </li>
+            <?php endif ?>
+
         </ul>
 
     </aside>

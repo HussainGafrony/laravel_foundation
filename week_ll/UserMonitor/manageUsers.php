@@ -44,7 +44,7 @@ function deleteUser()
 function getUserData()
 {
     global $conn;
-    $user_id = isset($_POST['id']) ? $_POST['id'] : 0;
+    $user_id = isset($_POST['id']) ? $_POST['id'] : '';
     if ($user_id) {
         // Fetch user data
         $sql = "SELECT * FROM users WHERE id = ?";

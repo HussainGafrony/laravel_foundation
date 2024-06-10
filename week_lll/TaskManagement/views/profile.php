@@ -1,8 +1,11 @@
 <?php
-include './functions.php';
-$user_data = userData();
-if (isset($_POST['updateUser']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
-  updateUser();
+include './controller/auth.php';
+if (isset($_POST['editUser']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
+
+  if (!editUser()) {
+    $result = getUser($_SESSION['user']['id']);
+    $_SESSION['profile'] = $result;
+  }
 }
 ?>
 <main id="main" class="main">
@@ -19,6 +22,9 @@ if (isset($_POST['updateUser']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   }
   ?>
   <section class="section profile">
+    <?php
+    $user_data = isset($_SESSION['profile']) ? $_SESSION['profile'] : $_SESSION['user'];
+    ?>
     <div class="row">
       <div class="col-xl-4">
 
@@ -69,11 +75,12 @@ if (isset($_POST['updateUser']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                   <div class="col-lg-3 col-md-4 label">Email</div>
                   <div class="col-lg-9 col-md-8"><?= $user_data['email'] ?></div>
                 </div>
-                <div class="row">
-                  <div class="col-lg-3 col-md-4 label">Phone</div>
-                  <div class="col-lg-9 col-md-8"><?= $user_data['phone_number'] ?></div>
-                </div>
-
+                <?php if ($_SESSION['user']['role_name'] !== 'admin') :  ?>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Phone</div>
+                    <div class="col-lg-9 col-md-8"><?= $user_data['phone_number'] ?></div>
+                  </div>
+                <?php endif; ?>
               </div>
 
               <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
@@ -93,19 +100,21 @@ if (isset($_POST['updateUser']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
                   <input name="id" type="hidden" class="form-control" id="id" value="<?= $user_data['id'] ?>">
                   <div class="row mb-3">
+                    <input type="hidden" name="id" value="<?= $user_data['id'] ?>">
                     <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
                     <div class="col-md-8 col-lg-9">
                       <input name="name" type="text" class="form-control" id="fullName" value="<?= $user_data['name'] ?>">
                     </div>
                   </div>
+                  <?php if ($_SESSION['user']['role_name'] !== 'admin') :  ?>
 
-                  <div class="row mb-3">
-                    <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
-                    <div class="col-md-8 col-lg-9">
-                      <input name="phone_number" type="text" class="form-control" id="phone_number" value="<?= $user_data['phone_number'] ?>">
+                    <div class="row mb-3">
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="phone_number" type="text" class="form-control" id="phone_number" value="<?= $user_data['phone_number'] ?>">
+                      </div>
                     </div>
-                  </div>
-
+                  <?php endif ?>
                   <div class="row mb-3">
                     <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                     <div class="col-md-8 col-lg-9">
@@ -123,7 +132,7 @@ if (isset($_POST['updateUser']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
                   <div class="text-center">
-                    <button type="submit" class="btn btn-primary" name="updateUser">Save Changes</button>
+                    <button type="submit" class="btn btn-primary" name="editUser">Save Changes</button>
                   </div>
                 </form>
 
