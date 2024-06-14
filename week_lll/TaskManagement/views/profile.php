@@ -17,7 +17,7 @@ if (isset($_POST['editUser']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
   if (isset($_SESSION['msg'])) {
     echo '<div id="alert" class="alert alert-success w-50 mx-auto" role="alert">';
     echo  $_SESSION['msg'];
-    // unset($_SESSION['msg']);
+    unset($_SESSION['msg']);
     echo '</div>';
   }
   ?>
@@ -75,12 +75,7 @@ if (isset($_POST['editUser']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                   <div class="col-lg-3 col-md-4 label">Email</div>
                   <div class="col-lg-9 col-md-8"><?= $user_data['email'] ?></div>
                 </div>
-                <?php if ($_SESSION['user']['role_name'] !== 'admin') :  ?>
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Phone</div>
-                    <div class="col-lg-9 col-md-8"><?= $user_data['phone_number'] ?></div>
-                  </div>
-                <?php endif; ?>
+
               </div>
 
               <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
@@ -106,15 +101,6 @@ if (isset($_POST['editUser']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
                       <input name="name" type="text" class="form-control" id="fullName" value="<?= $user_data['name'] ?>">
                     </div>
                   </div>
-                  <?php if ($_SESSION['user']['role_name'] !== 'admin') :  ?>
-
-                    <div class="row mb-3">
-                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="phone_number" type="text" class="form-control" id="phone_number" value="<?= $user_data['phone_number'] ?>">
-                      </div>
-                    </div>
-                  <?php endif ?>
                   <div class="row mb-3">
                     <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                     <div class="col-md-8 col-lg-9">

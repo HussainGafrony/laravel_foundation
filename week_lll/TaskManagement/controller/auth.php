@@ -11,12 +11,11 @@ function editUser()
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssi", $name, $email, $password, $id);
     if ($stmt->execute()) {
-        echo "User information updated successfully.";
+        returnResponse("User information updated successfully.");
     } else {
-        echo "Error updating user information: " . $stmt->error;
+        returnResponse("Error updating user information: " . $stmt->error);
     }
     $stmt->close();
-    // $conn->close();
 }
 
 function getUser($user_id)
