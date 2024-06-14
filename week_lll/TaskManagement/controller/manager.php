@@ -1,5 +1,4 @@
 <?php
-include 'function.php';
 include 'db.php';
 
 function getManagers()
@@ -10,12 +9,9 @@ function getManagers()
     INNER JOIN managers ON users.id = managers.user_id";
 
     $stmt = $conn->prepare($sql);
-    if ($stmt === false) {
-        returnResponse("Failed to prepare statement: " . $conn->error);
-        return false;
-    }
     $stmt->execute();
     $result = $stmt->get_result();
+
     if ($result === false) {
         returnResponse("Failed to get result: " . $stmt->error);
         $stmt->close();

@@ -37,12 +37,16 @@ function Login()
             return false;
         }
         $user_data = $result->fetch_assoc();
-        // print_r($user_data['is_active']);
-        if ($user_data['is_active'] !== 1) {
-            checkUserStatus($user_data['is_active']);
-            return false;
+        if ($user_data > 0) {
+            // print_r($user_data['is_active']);
+            if ($user_data['is_active'] !== 1) {
+                checkUserStatus($user_data['is_active']);
+                return false;
+            }
+            $_SESSION['user'] = $user_data;
+        } else {
+            returnResponse('Invalid username or password');
         }
-        $_SESSION['user'] = $user_data;
         $stmt->close();
         return $user_data;
     } else {

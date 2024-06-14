@@ -98,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
                             <th>status</th>
                             <th>rejected_reason</th>
                             <th>created_at</th>
+                            <th>comment</th>
                             <th>action</th>
                         </tr>
                     </thead>
@@ -120,6 +121,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
                             echo "<td>" . $task['rejected_reason'] . "</td>";
                             echo "<td>" . $task['created_at'] . "</td>";
                             echo "<td>";
+                            // Comment
+                            echo "<form action='' method='POST' style='display: inline;'>";
+                            echo "<button type='submit' class='me-3 btn'><a href='?p=comment&task_id=" . $task['id'] . "' >See Comment</a> </button>";
+                            echo "</form>";
+                            echo "</td>";
+
+                            echo "<td>";
+
                             // " . $_SERVER["PHP_SELF"] . "
                             // action='' has error when delete task this going in index page
                             echo "<form action='' method='POST' style='display: inline;'>";
@@ -132,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
                             echo "<button type='submit' class='me-3 btn btn-primary' name='getTask'>
                             <a data-bs-toggle='modal' data-bs-target='#editModal'>Edit</a> </button>";
                             echo "</form>";
+
                             echo "</td>";
                             echo "</tr>";
                         }
@@ -327,4 +337,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
             </div>
         </div>
     </div>
+
+
 </main>

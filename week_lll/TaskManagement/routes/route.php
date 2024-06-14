@@ -14,6 +14,9 @@ function route($page)
         case 'task':
             include 'views/task.php';
             break;
+        case 'comment':
+            include 'views/comment.php';
+            break;
         case 'profile':
             include 'views/profile.php';
             break;
