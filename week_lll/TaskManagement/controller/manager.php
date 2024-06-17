@@ -48,7 +48,6 @@ function getManager($user_id)
             $stmt->close();
             return false;
         }
-
         $manager = $result->fetch_assoc();
         $stmt->close();
         return $manager;
@@ -56,6 +55,42 @@ function getManager($user_id)
         returnResponse("Error: User ID not provided.");
         return false;
     }
+}
+
+
+function getEmployeesByManager($user_id)
+{
+    global $conn;
+    $manger_id = getManager($user_id);
+    if (!$manger_id) {
+        returnResponse("Error: Manager ID not found for user ID: $user_id.");
+        return false;
+    }
+
+    $sql = "SELECT users.*, employees.*
+    FROM users
+    INNER JOIN employees ON users.id = employees.user_id
+    WHERE employees.manager_id = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $manger_id['id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result === false) {
+        returnResponse("Failed to get result: " . $stmt->error);
+        $stmt->close();
+        return false;
+    }
+
+    $employees = [];
+    while ($row = $result->fetch_assoc()) {
+        $employees[] = $row;
+    }
+
+    $stmt->close();
+
+    return  $employees ?: false;
 }
 function createManager()
 {

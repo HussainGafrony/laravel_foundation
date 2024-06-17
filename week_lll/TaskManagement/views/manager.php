@@ -37,10 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
             </div>
             <div class="card-body">
                 <div class="rounded-3">
-                    <table id="myTable" class="table table-bordered hover">
+                    <table id="myTable" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>user_id</th>
                                 <th>name</th>
                                 <th>phone_number</th>
                                 <th>birthdate</th>
@@ -59,8 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
 
                             foreach ($managers as $manager) {
                                 echo "<tr>";
-                                echo "<td>" . $manager['user_id'] . "</td>";
-                                echo "<td>" . $manager['name'] . "</td>";
+                                echo "<td>" . $manager['name'] . " <a href='?p=disEmpolyees&manager_id=" . $manager['user_id'] . "'><i class='bi bi-people-fill'></i></a></td>";
                                 echo "<td>" . $manager['phone_number'] . "</td>";
                                 echo "<td>" . $manager['birthdate'] . "</td>";
                                 echo "<td>" . $manager['email'] . "</td>";
@@ -90,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
         </div>
     </section>
 
-    <!-- Create Manager [Modal]  -->
+    <!-- Create Manager Modal  -->
     <div class="modal fade" id="managerModal" tabindex="-1" aria-labelledby="managerModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -160,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
         </div>
     </div>
 
-    <!-- Edit Manager [Modal] -->
+    <!-- Edit Manager Modal -->
     <div class="modal fade" id="editmanagerModal" tabindex="-1" aria-labelledby="editmanagerModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -244,26 +242,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
     </div>
 
 </main>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script>
-    $(document).ready(function() {
-        function toggleUserManager() {
-            console.log("Toggling User Manager visibility");
-            var userRole = $("#user_role").val();
-            if (userRole === "admin" || userRole === "manager") {
-                $("#user_manager").hide();
-            } else {
-                $("#user_manager").show();
-            }
-        }
-        $("#user_role").change(toggleUserManager);
-        toggleUserManager();
-
-
-    });
-    // $("#togglePassword").click(function() {
-    //     var type = $("#password").prop("type") === "password" ? "text" : "password";
-    //     $("#password").prop("type", type);
-    //     $(this).toggleClass("bi-eye");
-    // });
-</script>

@@ -23,6 +23,9 @@ function route($page)
         case 'login':
             include 'views/login.php';
             break;
+        case 'disEmpolyees':
+            include 'views/disEmpolyees.php';
+            break;
         case 'notfound':
             include 'views/404.php';
             break;
