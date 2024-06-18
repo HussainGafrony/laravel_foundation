@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
                         echo "<td>";
                         // Comment
                         echo "<form action='' method='POST' style='display: inline;'>";
-                        echo "<button type='submit' class='me-3 btn'><a href='?p=comment&task_id=" . $task['id'] . "' >See Comment</a> </button>";
+                        echo "<a href='?p=comment&task_id=" . $task['id'] . "' >See Comment</a>";
                         echo "</form>";
                         echo "</td>";
                         echo "</tr>";
