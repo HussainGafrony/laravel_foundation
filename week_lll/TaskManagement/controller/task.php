@@ -253,3 +253,63 @@ function deleteTask()
         return false;
     }
 }
+
+
+
+function getEmployee($user_id)
+{
+    global $conn;
+    if (!empty($user_id)) {
+        $sql = "SELECT id FROM employees WHERE user_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result === false) {
+            returnResponse("Failed to get result: " . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+
+        $employee = $result->fetch_assoc();
+        // $stmt->close();
+        return $employee;
+    } else {
+        returnResponse("Error: User ID not provided.");
+        return false;
+    }
+}
+
+
+function getTasksByEmployee($user_id)
+{
+    global $conn;
+    if (!empty($user_id)) {
+        $employee = getEmployee($user_id);
+        if (!$employee) {
+            returnResponse("Error: Manager ID not found for user ID: $user_id.");
+            return false;
+        }
+        $sql = "SELECT * FROM tasks WHERE tasks.employee_id = ?";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $employee['id']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($stmt === false) {
+            returnResponse("Failed to prepare statement: " . $conn->error);
+            return false;
+        }
+        $tasks = [];
+        while ($row = $result->fetch_assoc()) {
+            $tasks[] = $row;
+        }
+        $stmt->close();
+        return  $tasks ?: false;
+    } else {
+        returnResponse("Error: User ID not provided.");
+        return false;
+    }
+}

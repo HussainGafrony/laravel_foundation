@@ -5,8 +5,6 @@ function getComment($task_id)
     global $conn;
 
     if (!empty($task_id)) {
-
-        // $sql = "SELECT * FROM comments WHERE task_id = ?";
         $sql = "SELECT comments.*,users.*,comments.id
         FROM comments
         INNER JOIN users ON users.id = comments.user_id
@@ -33,6 +31,34 @@ function getComment($task_id)
         return false;
     }
 }
+
+function getCommentByID($comment_id)
+{
+    global $conn;
+
+    if (!empty($comment_id)) {
+
+        $sql = "SELECT * FROM comments WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $comment_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result === false) {
+            returnResponse("Failed to get result: " . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+
+        $Comment = $result->fetch_assoc();
+        $stmt->close();
+        return $Comment;
+    } else {
+        returnResponse("Error: Comment ID not provided.");
+        return false;
+    }
+}
+
 
 function createComment()
 {
@@ -78,4 +104,23 @@ function deleteComment()
         returnResponse("Error: Comment ID not provided.");
         return false;
     }
+}
+function editComment()
+{
+    global $conn;
+    $comment_id = validateInput('comment_id');
+    $comment = validateInput('comment');
+
+    $sql = "UPDATE comments SET comment = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $comment, $comment_id);
+
+
+    if ($stmt->execute()) {
+        returnResponse('Updated Comment successfully');
+    } else {
+        returnResponse('Error' . $stmt->error);
+    }
+
+    $stmt->close();
 }
