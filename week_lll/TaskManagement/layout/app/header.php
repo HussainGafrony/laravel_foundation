@@ -1,5 +1,6 @@
 <?php
 include './function.php'
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +41,7 @@ include './function.php'
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="?p=home" class="logo d-flex align-items-center">
+            <a href="?p=statistics" class="logo d-flex align-items-center">
                 <img src="assets/img/logo.png" alt="">
                 <span class="d-none d-lg-block  font-weight-light fs-4">Welcome <b class="fs-3 text-black opacity-50">
                         <?php
@@ -55,18 +56,10 @@ include './function.php'
                 </span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
-        </div>
-
-
+        </div><!-- End Logo -->
 
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
-
-                <!-- <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li> -->
 
                 <li class="nav-item dropdown pe-3">
 
@@ -113,8 +106,7 @@ include './function.php'
                         </form>
 
                     </ul><!-- End Profile Dropdown Items -->
-                </li>
-                <!-- End Profile Nav -->
+                </li><!-- End Profile Nav -->
 
             </ul>
         </nav><!-- End Icons Navigation -->
@@ -125,13 +117,13 @@ include './function.php'
     <aside id="sidebar" class="sidebar">
 
         <ul class="sidebar-nav" id="sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="?p=statistics">
+                    <i class="bi bi-card-list"></i>
+                    <span>Statistics</span>
+                </a>
+            </li>
             <?php if ($_SESSION['user']['role_name'] === 'admin' || $_SESSION['user']['role_name'] === 'manager') :  ?>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="?p=statistics">
-                        <i class="bi bi-card-list"></i>
-                        <span>Statistics</span>
-                    </a>
-                </li>
 
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="?p=employee">
@@ -139,14 +131,14 @@ include './function.php'
                         <span>Employees</span>
                     </a>
                 </li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="?p=task">
-                        <i class="bi bi-card-list"></i>
-                        <span>Taks</span>
-                    </a>
-                </li>
             <?php endif ?>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="?p=task">
+                    <i class="bi bi-card-list"></i>
+                    <span>Taks</span>
+                </a>
+            </li>
 
             <?php if ($_SESSION['user']['role_name'] === 'admin') :  ?>
                 <li class="nav-item">

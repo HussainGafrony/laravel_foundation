@@ -37,8 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
                     <table id="myTable" class="table table-bordered hover">
                         <thead>
                             <tr>
-                                <th>user_id</th>
-                                <th>manager_id</th>
+
                                 <th>manager_name</th>
                                 <th>name</th>
                                 <th>phone_number</th>
@@ -61,8 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
                                 // echo "</pre>";
 
                                 echo "<tr>";
-                                echo "<td>" . $employee['user_id'] . "</td>";
-                                echo "<td>" . $employee['manager_id'] . "</td>";
                                 echo "<td>" . $employee['manager_name'] . "</td>";
                                 echo "<td>" . $employee['name'] . "</td>";
                                 echo "<td>" . $employee['phone_number'] . "</td>";

@@ -167,3 +167,65 @@ function EmployeesByManager($status, $user_id)
 
     return $employees;
 }
+
+
+// Employyee Role
+function getEmployee($user_id)
+{
+
+    global $conn;
+
+    if (!empty($user_id)) {
+        $sql = "SELECT id FROM employees WHERE user_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result === false) {
+            returnResponse("Failed to get result: " . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+
+        $employee = $result->fetch_assoc();
+        // $stmt->close();
+        return $employee;
+    } else {
+        returnResponse("Error: User ID not provided.");
+        return false;
+    }
+}
+
+
+function getTaskCountByEmployeeAndStatus($user_id, $status)
+{
+    global $conn;
+
+    $employee = getEmployee($user_id);
+    if (!$employee) {
+        returnResponse("Error: Employee not found for user ID: $user_id.");
+        return false;
+    }
+
+    $sql = "SELECT *
+        FROM tasks
+        INNER JOIN employees ON employees.id = tasks.employee_id
+        WHERE tasks.employee_id = ? AND tasks.status = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $employee['id'], $status);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result === false) {
+        returnResponse("Failed to get result: " . $stmt->error);
+        $stmt->close();
+        return false;
+    }
+
+    $tasks = $result->fetch_assoc();
+    $stmt->close();
+
+    return $tasks;
+}
