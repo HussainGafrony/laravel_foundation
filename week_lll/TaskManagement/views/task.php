@@ -8,8 +8,8 @@ switch ($role) {
     case 'admin':
         include 'admin/task.php';
         break;
-    case 'empolyee':
-        include 'empolyee/task.php';
+    case 'employee':
+        include 'employee/task.php';
         break;
     default:
         include '404.php';
