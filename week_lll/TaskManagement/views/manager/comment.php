@@ -59,9 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteComment'])) {
                             echo "<td>" . $comment['created_at'] . "</td>";
                             echo "<td>";
                             // action='" . $_SERVER["PHP_SELF"] . "'
+                            $disableButton = $comment['user_id'] == $_SESSION['user']['id'];
+
                             echo "<form action='' method='POST' style='display: inline;'>";
                             echo "<input type='hidden' name='comment_id' value='" . $comment['id'] . "'>";
-                            echo "<button type='submit' class='me-3 btn btn-danger' name='deleteComment'>Delete</button>";
+                            echo "<button type='submit' class='me-3 btn btn-danger' name='deleteComment' " . ($disableButton ? "" : "disabled") . ">Delete</button>";
                             echo "</form>";
                             echo "</td>";
                             echo "</tr>";
