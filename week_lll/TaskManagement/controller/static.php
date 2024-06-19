@@ -113,10 +113,7 @@ function getTaskCountByManagerAndStatus($user_id, $status)
         return false;
     }
 
-    $sql = "SELECT COUNT(*) AS task_count 
-        FROM tasks
-        INNER JOIN managers ON managers.id = tasks.manager_id
-        WHERE tasks.manager_id = ? AND tasks.status = ?";
+    $sql = "SELECT COUNT(*) AS task_count FROM tasks WHERE manager_id = ? AND status = ?";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ii", $manger_id['id'], $status);
