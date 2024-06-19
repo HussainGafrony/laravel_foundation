@@ -324,31 +324,19 @@ include './controller/static.php';
         <?php
         $user_id = $_SESSION['user']['id'];
         // Tasks
-        echo "<pre>";
-        print_r($_SESSION['user']);
-        echo "</pre>";
-
         $taks_Pending = getTaskCountByEmployeeAndStatus($user_id, 1);
         if (!$taks_Pending) {
             returnResponse('hass error when get taks_Assigned');
         }
-        echo "tasks  : ";
-        // foreach ($taks_Pending as $key => $task) {
-        echo "<pre>";
-        // print_r($key . ' ' . $task);
-        print_r($taks_Pending);
 
-        echo "</pre>";
-        // }
-
-        // $taks_Assigned = getTaskCountByEmployeeAndStatus($user_id, 2);
-        // if (!$taks_Assigned) {
-        //     returnResponse('hass error when get taks_Assigned');
-        // }
-        // $taks_complated = getTaskCountByEmployeeAndStatus($user_id, 5);
-        // if (!$taks_complated) {
-        //     returnResponse('hass error when get taks_complated');
-        // }
+        $taks_Assigned = getTaskCountByEmployeeAndStatus($user_id, 2);
+        if (!$taks_Assigned) {
+            returnResponse('hass error when get taks_Assigned');
+        }
+        $taks_complated = getTaskCountByEmployeeAndStatus($user_id, 5);
+        if (!$taks_complated) {
+            returnResponse('hass error when get taks_complated');
+        }
 
         //  0=> Not Assigned";
         //  1=> Pending";
@@ -367,12 +355,12 @@ include './controller/static.php';
                         <h5 class="card-title">Tasks </h5>
                     </div>
                     <div class="card-body pt-0">
-                        <!-- <?php echo 'Pending : ' . $taks_Pending['task_count'] ?>
+                        <?php echo 'Pending : ' . $taks_Pending['task_count'] ?>
                         <br>
                         <?php echo 'Assigned : ' . $taks_Assigned['task_count'] ?>
                         <br>
                         <?php echo 'complated : ' . $taks_complated['task_count'] ?>
-                        <br> -->
+                        <br>
                     </div>
                 </div>
             </div>

@@ -208,10 +208,7 @@ function getTaskCountByEmployeeAndStatus($user_id, $status)
         return false;
     }
 
-    $sql = "SELECT *
-        FROM tasks
-        INNER JOIN employees ON employees.id = tasks.employee_id
-        WHERE tasks.employee_id = ? AND tasks.status = ?";
+    $sql = "SELECT COUNT(*) AS task_count FROM tasks WHERE employee_id = ? AND status = ?";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ii", $employee['id'], $status);
