@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
     if (isset($_SESSION['msg'])) {
         echo '<div id="alert" class="alert alert-success w-50 mx-auto" role="alert">';
         echo $_SESSION['msg'];
-        // unset($_SESSION['msg']);
+        unset($_SESSION['msg']);
         echo '</div>';
     }
     ?>
@@ -40,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
             <table id="myTable" class="table table-bordered hover">
                 <thead>
                     <tr>
-                        <th>manager_name</th>
                         <th>employee_name</th>
                         <th>title</th>
                         <th>description</th>
@@ -58,11 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
                         returnResponse('hass error when get tasks');
                     }
                     foreach ($tasks as $task) {
-                        // echo "<pre>";
-                        // print_r($task);
-                        // echo "</pre>";
                         echo "<tr>";
-                        echo "<td>" . $task['manager_name'] . "</td>";
                         echo "<td>" . $task['employee_name'] . "</td>";
                         echo "<td>" . $task['title'] . "</td>";
                         echo "<td>" . $task['description'] . "</td>";
@@ -147,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
                                 $disabled = ($result['status'] == 1 || $result['status'] >= 1) ? 'disabled' : '';
                                 ?>
 
-                                <select class="form-select" name="status" <?php echo $disabled; ?>>
+                                <select class="form-select" name="status">
                                     <?php
                                     $status = $result['status'];
                                     $statuses = [0, 1, 2, 3, 4, 5];

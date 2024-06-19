@@ -17,6 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
     $_SESSION['task_id'] = $task_id;
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editTaskStatus'])) {
+    editTaskStatus();
+}
+
+
 
 ?>
 <main id="main" class="main">
@@ -42,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
                         <th>rejected_reason</th>
                         <th>created_at</th>
                         <th>comment</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,117 +57,82 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
                         returnResponse('hass error when get tasks');
                     }
                     foreach ($tasks as $task) {
+
                         echo "<tr>";
                         echo "<td>" . $task['title'] . "</td>";
                         echo "<td>" . $task['description'] . "</td>";
-                        echo "<td>" . getTaskStatus($task['status']) . "</td>";
-                        echo "<td>" . $task['rejected_reason'] . "</td>";
+                        echo "<td style='color:" . getTaskStatusColor($task['status']) . "; font-weight: bold;'>" . getTaskStatus($task['status']) . "</td>";
+                        echo "<td>" . (!empty($task['rejected_reason']) ? $task['rejected_reason'] : 'Null') . "</td>";
                         echo "<td>" . $task['created_at'] . "</td>";
-                        echo "<td>";
                         // Comment
-                        echo "<form action='' method='POST' style='display: inline;'>";
-                        echo "<a href='?p=comment&task_id=" . $task['id'] . "' >See Comment</a>";
-                        echo "</form>";
+                        echo "<td>";
+                        if ($task['status'] != 0 && $task['status'] != 1) {
+                            echo "<form action='' method='POST' style='display: inline;'>";
+                            echo "<a href='?p=comment&task_id=" . $task['id'] . "'>See Comment</a>";
+                            echo "</form>";
+                        } else {
+                            echo "This is not available";
+                        }
                         echo "</td>";
-                        echo "</tr>";
+
+                        // Status
+                        if (getTaskStatus($task['status']) === 'Pending') {
+                            echo "<td>";
+                            echo "<select name='status' class='form-select' onchange='showNextOptions(this, " . $task['id'] . ")'>";
+                            echo "<option value='2'>Accept</option>";
+                            echo "<option value='4'>Reject</option>";
+                            echo "</select>";
+                            echo "</td>";
+                        } elseif (getTaskStatus($task['status']) === 'Assigned') {
+                            echo "<td>";
+                            echo "<select name='status' class='form-select'  onchange='showNextOptions(this, " . $task['id'] . ")'>";
+                            echo "<option value='3'>In Progress</option>";
+                            echo "<option value='5'>Completed</option>";
+                            echo "</select>";
+                            echo "</td>";
+                        } elseif (getTaskStatus($task['status']) === 'In Progress') {
+                            echo "<td>";
+                            echo "<select name='status' class='form-select'  onchange='showNextOptions(this, " . $task['id'] . ")'>";
+                            echo "<option value='3'>In Progress</option>";
+                            echo "<option value='5'>Completed</option>";
+                            echo "</select>";
+                            echo "</td>";
+                        } else {
+                            echo "<td></td>";
+                        }
                     }
                     ?>
                 </tbody>
             </table>
+            <form action="" method="POST">
+                <div class="text-end">
+                    <input type="hidden" class="form-control" name="task_id" id="TaskId">
+                    <input type="hidden" class="form-control" name="status" id="TaskStatus">
+                    <button type='submit' name='editTaskStatus' class='btn btn-primary'>Update Status</button>
+                </div>
+            </form>
 
         </div>
     </div>
 
-
-    <!-- Edit Task [Modal] -->
-    <div class="modal modal-lg" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- Rejection Reason Modal -->
+    <div class="modal" id="rejectionModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <?php
-                $result = getTask($_SESSION['task_id']);
-                $_SESSION['task'] = $result;
-                ?>
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editModal">Edit Task</h1>
+                    <h5 class="modal-title">Reason for Rejection</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <!-- Form Statred -->
-                    <form action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
-                        <input type="hidden" name="task_id" value="<?= $result['id'] ?>">
-                        <input type="hidden" name="manager_id" value="<?= $result['manager_id'] ?>">
-                        <input type="hidden" name="employee_id" value="<?= $result['employee_id'] ?>">
-                        <div class="row mb-3">
-                            <label for="Email" class="col-md-4 col-lg-3 col-form-label">Title</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="title" type="text" class="form-control" value="<?= $result['title'] ?>" required>
-                            </div>
+                <div class="modal-body ">
+
+                    <form action="" method="POST">
+                        <input type="hidden" class="form-control" name="task_id" id="TaskIdmodal">
+                        <input type="hidden" class="form-control" name="status" id="TaskStatusmodal">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="rejected_reason" id="rejected_reason" required>
                         </div>
-
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-lg-3 col-form-label">Description</label>
-                            <div class="col-md-8 col-lg-9">
-                                <input name="description" type="text" class="form-control" value="<?= $result['description'] ?>" required>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">rejected_reason</label>
-                            <div class="col-md-8 col-lg-9 input-container">
-                                <input name="rejected_reason" type="text" class="form-control" value="<?= $result['rejected_reason'] ?>">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="role" class="col-md-4 col-lg-3 col-form-label">Task Status
-                            </label>
-                            <div class="col-md-8 col-lg-5">
-                                <?php
-                                $disabled = ($result['status'] == 1 || $result['status'] >= 1) ? 'disabled' : '';
-                                ?>
-
-                                <select class="form-select" name="status" <?php echo $disabled; ?>>
-                                    <?php
-                                    $status = $result['status'];
-                                    $statuses = [0, 1, 2, 3, 4, 5];
-                                    foreach ($statuses as $value) {
-                                        $selected = ($status == $value) ? 'selected' : '';
-                                        echo '<option value="' . $value . '" ' . $selected . '>' . getTaskStatus($value) . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Employee Name</label>
-                            <div class="col-md-8 col-lg-5">
-                                <select class="form-select" name="employee_id">
-                                    <?php
-                                    $manager = getManager($_SESSION['user']['id']);
-                                    if (!$manager) {
-                                        returnResponse('Error when getting manager');
-                                    }
-
-                                    $employees = getEmployeesByManagerTask($manager['id']);
-                                    if (!$employees) {
-                                        returnResponse('Error when getting employees');
-                                    }
-
-                                    foreach ($employees as $employee) {
-                                        $selected = $employee['id'] == $result['employee_id'] ? 'selected' : '';
-                                        echo "<option value='" . $employee['id'] . "' $selected>" . $employee['employee_name'] . "</option>";
-                                    }
-
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" name="editTask">Save</button>
-                        </div>
+                        <button type="submit" name="editTaskStatus" class="btn btn-primary my-2">Submit</button>
                     </form>
-                    <!-- Form End -->
                 </div>
             </div>
         </div>
@@ -169,3 +140,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
 
 
 </main>
+<script>
+    function showNextOptions(selectElement, taskId) {
+        var selectValue = selectElement.value;
+        if (selectValue == '4') {
+            $('#rejectionModal').modal('show');
+            document.getElementById('TaskIdmodal').value = taskId;
+            document.getElementById('TaskStatusmodal').value = selectValue;
+        } else {
+            document.getElementById('TaskId').value = taskId;
+            document.getElementById('TaskStatus').value = selectValue;
+        }
+    }
+</script>

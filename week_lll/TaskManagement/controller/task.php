@@ -71,13 +71,10 @@ function getTasksByManager($user_id)
             return false;
         }
         $sql = "SELECT tasks.*, 
-    user_employees.name AS employee_name,
-    user_managers.name AS manager_name
+    user_employees.name AS employee_name
     FROM tasks
-    INNER JOIN employees ON employees.id = tasks.employee_id
-    INNER JOIN users AS user_employees ON user_employees.id = employees.user_id
-    INNER JOIN managers ON managers.id = tasks.manager_id
-    INNER JOIN users AS user_managers ON user_managers.id = managers.user_id
+    LEFT JOIN employees ON employees.id = tasks.employee_id
+    LEFT JOIN users AS user_employees ON user_employees.id = employees.user_id
      WHERE tasks.manager_id = ?";
 
         $stmt = $conn->prepare($sql);
@@ -254,8 +251,6 @@ function deleteTask()
     }
 }
 
-
-
 function getEmployee($user_id)
 {
     global $conn;
@@ -312,4 +307,33 @@ function getTasksByEmployee($user_id)
         returnResponse("Error: User ID not provided.");
         return false;
     }
+}
+
+
+function editTaskStatus()
+{
+    global $conn;
+
+    $task_id = validateInput('task_id');
+    // $employee_id = validateInput('employee_id') ?: null;
+    $rejected_reason = validateInput('rejected_reason') ?: null;
+    $status = validateInput('status');
+
+    if ($rejected_reason != null) {
+        $sql = "UPDATE tasks SET employee_id = NULL, status = ?, rejected_reason = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("isi", $status, $rejected_reason, $task_id);
+    } else {
+        $sql = "UPDATE tasks SET status = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $status, $task_id);
+    }
+
+    if ($stmt->execute()) {
+        returnResponse('New Task Updated Successfully');
+    } else {
+        returnResponse('Error: ' . $stmt->error);
+    }
+
+    $stmt->close();
 }

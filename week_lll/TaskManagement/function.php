@@ -46,6 +46,26 @@ function getTaskStatus($status)
             return "Unknown Status";
     }
 }
+
+function getTaskStatusColor($status)
+{
+    switch ($status) {
+        case 0:
+            return 'gray'; // Not Assigned
+        case 1:
+            return 'red'; // Pending
+        case 2:
+            return 'blue'; // Assigned
+        case 3:
+            return 'orange'; // In Progress
+        case 4:
+            return 'purple'; // Rejected
+        case 5:
+            return 'green'; // Completed
+        default:
+            return 'black'; // Unknown Status
+    }
+}
 function returnResponse($msg, $nextTo = false)
 {
     $_SESSION['msg'] = $msg;
