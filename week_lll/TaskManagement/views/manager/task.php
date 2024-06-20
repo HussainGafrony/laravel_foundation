@@ -13,10 +13,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteTask'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
-    $task_id = validateInput('task_id');
     $_SESSION['task_id'] = $task_id;
 }
 
+$result = [];
+$task_id = validateInput('task_id');
+
+if ($task_id) {
+    $result = getTask($task_id);
+}
 
 ?>
 <main id="main" class="main">
@@ -82,8 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
 
                         echo "<form action='' method='POST' style='display: inline;'>";
                         echo "<input type='hidden' name='task_id' value='" . $task['id'] . "'>";
-                        echo "<button type='submit' class='me-3 btn btn-primary' name='getTask'>
-                            <a data-bs-toggle='modal' data-bs-target='#editModal'>Edit</a> </button>";
+                        echo "<button type='submit' class='me-3 btn btn-primary'>Edit</button>";
                         echo "</form>";
 
                         echo "</td>";
@@ -98,13 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
 
 
     <!-- Edit Task [Modal] -->
-    <div class="modal modal-lg" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true">
+    <div class="modal modal-lg" id="edit" tabindex="-1" aria-labelledby="editModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <?php
-                $result = getTask($_SESSION['task_id']);
-                $_SESSION['task'] = $result;
-                ?>
+
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="editModal">Edit Task</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -281,5 +282,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
         </div>
     </div>
 
-
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if (!empty($result)) : ?>
+            var modalElement = document.getElementById('edit');
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+
+            modalElement.addEventListener('click', function(event) {
+                if (event.target.classList.contains('btn-close') || event.target.classList.contains('btn-secondary') || event.target.classList.contains('modal')) {
+                    modal.hide();
+                }
+            });
+            document.querySelector('.btn-primary').addEventListener('click', function() {
+                modal.hide();
+            });
+
+        <?php endif; ?>
+    });
+</script>

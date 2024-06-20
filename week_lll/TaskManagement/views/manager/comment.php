@@ -45,30 +45,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteComment'])) {
                 </thead>
                 <tbody>
                     <?php
-                    if (!$comments) {
+                    foreach ($comments as $comment) {
 
                         echo "<tr>";
-                        echo "<td colspan='4' class='text-center'>No comments available for this task.</td>";
+                        echo "<td>" . $comment['name'] . "</td>";
+                        echo "<td>" . $comment['comment'] . "</td>";
+                        echo "<td>" . $comment['created_at'] . "</td>";
+                        echo "<td>";
+                        // action='" . $_SERVER["PHP_SELF"] . "'
+                        $disableButton = $comment['user_id'] == $_SESSION['user']['id'];
+
+                        echo "<form action='' method='POST' style='display: inline;'>";
+                        echo "<input type='hidden' name='comment_id' value='" . $comment['id'] . "'>";
+                        echo "<button type='submit' class='me-3 btn btn-danger' name='deleteComment' " . ($disableButton ? "" : "disabled") . ">Delete</button>";
+                        echo "</form>";
+                        echo "</td>";
                         echo "</tr>";
-                    } else {
-                        foreach ($comments as $comment) {
-
-                            echo "<tr>";
-                            echo "<td>" . $comment['name'] . "</td>";
-                            echo "<td>" . $comment['comment'] . "</td>";
-                            echo "<td>" . $comment['created_at'] . "</td>";
-                            echo "<td>";
-                            // action='" . $_SERVER["PHP_SELF"] . "'
-                            $disableButton = $comment['user_id'] == $_SESSION['user']['id'];
-
-                            echo "<form action='' method='POST' style='display: inline;'>";
-                            echo "<input type='hidden' name='comment_id' value='" . $comment['id'] . "'>";
-                            echo "<button type='submit' class='me-3 btn btn-danger' name='deleteComment' " . ($disableButton ? "" : "disabled") . ">Delete</button>";
-                            echo "</form>";
-                            echo "</td>";
-                            echo "</tr>";
-                        }
                     }
+
                     ?>
                 </tbody>
             </table>
