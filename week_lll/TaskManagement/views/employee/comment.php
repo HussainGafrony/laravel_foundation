@@ -13,10 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editComment'])) {
     editComment();
 }
 
-$comment_id = validateInput('comment_id');
 
 $result = [];
-
+$comment_id = validateInput('comment_id');
 if ($comment_id) {
     $result = getCommentByID($comment_id);
 }

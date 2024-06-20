@@ -8,13 +8,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteManager'])) {
     deleteManager();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getManager'])) {
-    $user_id = validateInput('user_id');
-    $_SESSION['user_id'] = $user_id;
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
     editManager();
+}
+
+$result = [];
+$user_id = validateInput('user_id');
+if ($user_id) {
+    $result = getManager($user_id);
 }
 
 
@@ -74,8 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
 
                                 echo "<form action='' method='POST' style='display: inline;'>";
                                 echo "<input type='hidden' name='user_id' value='" . $manager['user_id'] . "'>";
-                                echo "<button type='submit' class='me-3 btn btn-primary' name='getManager'>
-                                <a data-bs-toggle='modal' data-bs-target='#editmanagerModal'>Edit</a> </button>";
+                                echo "<button type='submit' class='me-3 btn btn-primary'>Edit </button>";
                                 echo "</form>";
                                 echo "</td>";
                                 echo "</tr>";
@@ -159,58 +159,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
     </div>
 
     <!-- Edit Manager Modal -->
-    <div class="modal fade" id="editmanagerModal" tabindex="-1" aria-labelledby="editmanagerModal" aria-hidden="true">
+    <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="editmanagerModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <?php
-                $result = getManager($_SESSION['user_id']);
-                $_SESSION['manager'] = $result;
-                // echo "<pre>";
-                // print_r($_SESSION['manager']);
-                // echo "</pre>";
 
-                ?>
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editmanagerModal">Edit Manager</h1>
+                    <h1 class="modal-title fs-5" id="edit">Edit Manager</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Form Statred -->
                     <form action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
                         <div class="row mb-3">
-                            <input name="user_id" type="hidden" class="form-control" id="user_id" value="<?= $_SESSION['manager']['user_id'] ?>" required>
+                            <input name="user_id" type="hidden" class="form-control" id="user_id" value="<?= $result['user_id'] ?>" required>
 
                             <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Name</label>
                             <div class="col-md-8 col-lg-9">
-                                <input name="name" type="text" class="form-control" id="name" value="<?= $_SESSION['manager']['name'] ?>" required>
+                                <input name="name" type="text" class="form-control" id="name" value="<?= $result['name'] ?>" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone_Number</label>
                             <div class="col-md-8 col-lg-9">
-                                <input name="phone_number" type="number" class="form-control" value="<?= $_SESSION['manager']['phone_number'] ?>" id="phone_number" required>
+                                <input name="phone_number" type="number" class="form-control" value="<?= $result['phone_number'] ?>" id="phone_number" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="Email" class="col-md-4 col-lg-3 col-form-label">Birth_Date</label>
                             <div class="col-md-8 col-lg-9">
-                                <input name="birthdate" type="date" class="form-control" value="<?= $_SESSION['manager']['birthdate'] ?>" id="birthdate" required>
+                                <input name="birthdate" type="date" class="form-control" value="<?= $result['birthdate'] ?>" id="birthdate" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                             <div class="col-md-8 col-lg-9">
-                                <input name="email" type="email" class="form-control" value="<?= $_SESSION['manager']['email'] ?>" id="email" required>
+                                <input name="email" type="email" class="form-control" value="<?= $result['email'] ?>" id="email" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Password</label>
                             <div class="col-md-8 col-lg-9 input-container">
-                                <input name="password" type="password" class="form-control" value="<?= $_SESSION['manager']['password'] ?>" id="password" required>
+                                <input name="password" type="password" class="form-control" value="<?= $result['password'] ?>" id="password" required>
                                 <i class="bi bi-eye-slash" id="togglePassword"></i>
                             </div>
                         </div>
@@ -220,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
                             <div class="col-md-8 col-lg-5">
                                 <select class="form-select" name="is_active">
                                     <?php
-                                    $is_active = $_SESSION['manager']['is_active'];
+                                    $is_active = $result['is_active'];
                                     ?>
                                     <option value="1" <?php echo ($is_active == 1) ? 'selected' : ''; ?>>Active</option>
                                     <option value="2" <?php echo ($is_active == 2) ? 'selected' : ''; ?>>Disabled</option>
@@ -242,3 +235,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editManager'])) {
     </div>
 
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if (!empty($result)) : ?>
+            var modalElement = document.getElementById('edit');
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+
+            modalElement.addEventListener('click', function(event) {
+                if (event.target.classList.contains('btn-close') || event.target.classList.contains('btn-secondary') || event.target.classList.contains('modal')) {
+                    modal.hide();
+                }
+            });
+            document.querySelector('.btn-primary').addEventListener('click', function() {
+                modal.hide();
+            });
+
+        <?php endif; ?>
+    });
+</script>

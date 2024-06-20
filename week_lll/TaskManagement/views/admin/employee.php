@@ -8,14 +8,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteEmployee'])) {
     deleteEmployee();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getManager'])) {
-    $user_id = validateInput('user_id');
-    $_SESSION['user_id'] =  $user_id;
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
     editEmployee();
 }
+
+$result = [];
+$user_id = validateInput('user_id');
+if ($user_id) {
+    $result = getEmployee($user_id);
+}
+
 ?>
 <main id="main" class="main">
     <section class="section dashboard">
@@ -23,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
         if (isset($_SESSION['msg'])) {
             echo '<div id="alert" class="alert alert-success w-50 mx-auto" role="alert">';
             echo $_SESSION['msg'];
-            // unset($_SESSION['msg']);
+            unset($_SESSION['msg']);
             echo '</div>';
         }
         ?>
@@ -55,9 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
                                 returnResponse('hass error when get employees');
                             }
                             foreach ($employees as $employee) {
-                                // echo "<pre>";
-                                // print_r($employee);
-                                // echo "</pre>";
 
                                 echo "<tr>";
                                 echo "<td>" . $employee['manager_name'] . "</td>";
@@ -77,8 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
 
                                 echo "<form action='' method='POST' style='display: inline;'>";
                                 echo "<input type='hidden' name='user_id' value='" . $employee['user_id'] . "'>";
-                                echo "<button type='submit' class='me-3 btn btn-primary' name='getManager'>
-                                <a data-bs-toggle='modal' data-bs-target='#editmanagerModal'>Edit</a> </button>";
+                                echo "<button type='submit' class='me-3 btn btn-primary'>Edit </button>";
                                 echo "</form>";
                                 echo "</td>";
                                 echo "</tr>";
@@ -183,21 +181,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
     </div>
 
     <!-- Edit Employee [Modal] -->
-    <div class="modal fade" id="editmanagerModal" tabindex="-1" aria-labelledby="editmanagerModal" aria-hidden="true">
+    <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="editmanagerModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <?php
-                $user_id =  $_SESSION['user_id'];
-                if (isset($user_id) && $user_id !== '') {
-                    $result = getEmployee($_SESSION['user_id']);
-                    $_SESSION['employee'] = $result;
-                }
 
-                // echo "<pre>";
-                // print_r($_SESSION['manager']);
-                // echo "</pre>";
-
-                ?>
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="editmanagerModal">Edit Employee</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -206,39 +193,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
                     <!-- Form Statred -->
                     <form action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
                         <div class="row mb-3">
-                            <input name="user_id" type="hidden" class="form-control" id="user_id" value="<?= $_SESSION['employee']['user_id'] ?>" required>
+                            <input name="user_id" type="hidden" class="form-control" id="user_id" value="<?= $result['user_id'] ?>" required>
 
                             <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Name</label>
                             <div class="col-md-8 col-lg-9">
-                                <input name="name" type="text" class="form-control" id="name" value="<?= $_SESSION['employee']['name'] ?>" required>
+                                <input name="name" type="text" class="form-control" id="name" value="<?= $result['name'] ?>" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone_Number</label>
                             <div class="col-md-8 col-lg-9">
-                                <input name="phone_number" type="number" class="form-control" value="<?= $_SESSION['employee']['phone_number'] ?>" id="phone_number" required>
+                                <input name="phone_number" type="number" class="form-control" value="<?= $result['phone_number'] ?>" id="phone_number" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="Email" class="col-md-4 col-lg-3 col-form-label">Birth_Date</label>
                             <div class="col-md-8 col-lg-9">
-                                <input name="birthdate" type="date" class="form-control" value="<?= $_SESSION['employee']['birthdate'] ?>" id="birthdate" required>
+                                <input name="birthdate" type="date" class="form-control" value="<?= $result['birthdate'] ?>" id="birthdate" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                             <div class="col-md-8 col-lg-9">
-                                <input name="email" type="email" class="form-control" value="<?= $_SESSION['employee']['email'] ?>" id="email" required>
+                                <input name="email" type="email" class="form-control" value="<?= $result['email'] ?>" id="email" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Password</label>
                             <div class="col-md-8 col-lg-9 input-container">
-                                <input name="password" type="password" class="form-control" value="<?= $_SESSION['employee']['password'] ?>" id="password" required>
+                                <input name="password" type="password" class="form-control" value="<?= $result['password'] ?>" id="password" required>
                                 <i class="bi bi-eye-slash" id="togglePassword"></i>
                             </div>
                         </div>
@@ -246,9 +233,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
                         <div class="row mb-3">
                             <label for="role" class="col-md-4 col-lg-4 col-form-label">Employee Status</label>
                             <div class="col-md-8 col-lg-5">
-                                <select class="form-select" name="manager_id">
+                                <select class="form-select" name="is_active">
                                     <?php
-                                    $is_active = $_SESSION['employee']['is_active'];
+                                    $is_active = $result['is_active'];
                                     ?>
                                     <option value="1" <?php echo ($is_active == 1) ? 'selected' : ''; ?>>Active</option>
                                     <option value="2" <?php echo ($is_active == 2) ? 'selected' : ''; ?>>Disabled</option>
@@ -260,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
                         <div class="row mb-3">
                             <label for="role" class="col-md-4 col-lg-4 col-form-label">Manager Employee</label>
                             <div class="col-md-8 col-lg-5">
-                                <select class="form-select" name="is_active">
+                                <select class="form-select" name="manager_id">
                                     <?php
                                     $managers = getManagers();
                                     if (!$managers) {
@@ -269,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
 
                                     foreach ($managers as $manager) {
 
-                                        $selected = $manager['id'] == $_SESSION['employee']['manager_id'] ? 'selected' : '';
+                                        $selected = $manager['id'] == $result['manager_id'] ? 'selected' : '';
                                         echo "<option value='" . $manager['id'] . "' $selected>" . $manager['name'] . "</option>";
                                     }
 
@@ -289,3 +276,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editEmployee'])) {
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (!empty($result)) : ?>
+                var modalElement = document.getElementById('edit');
+                var modal = new bootstrap.Modal(modalElement);
+                modal.show();
+
+                modalElement.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('btn-close') || event.target.classList.contains('btn-secondary') || event.target.classList.contains('modal')) {
+                        modal.hide();
+                    }
+                });
+                document.querySelector('.btn-primary').addEventListener('click', function() {
+                    modal.hide();
+                });
+
+            <?php endif; ?>
+        });
+    </script>

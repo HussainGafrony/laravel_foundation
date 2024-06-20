@@ -7,7 +7,7 @@ include './controller/task.php';
     if (isset($_SESSION['msg'])) {
         echo '<div id="alert" class="alert alert-success w-50 mx-auto" role="alert">';
         echo $_SESSION['msg'];
-        // unset($_SESSION['msg']);
+        unset($_SESSION['msg']);
         echo '</div>';
     }
     ?>
