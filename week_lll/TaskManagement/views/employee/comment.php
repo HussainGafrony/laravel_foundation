@@ -13,10 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editComment'])) {
     editComment();
 }
 
+$comment_id = validateInput('comment_id');
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getComment'])) {
-    $comment_id = validateInput('comment_id');
-    $_SESSION['comment_id'] = $comment_id;
+$result = [];
+
+if ($comment_id) {
+    $result = getCommentByID($comment_id);
 }
 
 ?>
@@ -54,34 +56,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getComment'])) {
                 </thead>
                 <tbody>
                     <?php
-                    if (!$comments) {
 
+                    foreach ($comments as $comment) {
                         echo "<tr>";
-                        echo "<td colspan='4' class='text-center'>No comments available for this task.</td>";
-                        echo "</tr>";
-                    } else {
-                        foreach ($comments as $comment) {
-                            echo "<tr>";
-                            echo "<td>" . $comment['name'] . "</td>";
-                            echo "<td>" . $comment['comment'] . "</td>";
-                            echo "<td>" . $comment['created_at'] . "</td>";
-                            echo "<td>";
-                            $disableButton = $comment['user_id'] == $_SESSION['user']['id'];
-                            echo "<form action='' method='POST' style='display: inline;'>";
-                            echo "<input type='hidden' name='comment_id' value='" . $comment['id'] . "'>";
-                            echo "<button type='submit' class='me-3 btn btn-primary' name='getComment' " . ($disableButton ? "" : "disabled") . ">
-                            <a data-bs-toggle='modal' data-bs-target='#editComment' >Edit</a> </button>";
-                            echo "</form>";
+                        echo "<td>" . $comment['name'] . "</td>";
+                        echo "<td>" . $comment['comment'] . "</td>";
+                        echo "<td>" . $comment['created_at'] . "</td>";
+                        echo "<td>";
 
-                            // action='" . $_SERVER["PHP_SELF"] . "'
-                            echo "<form action='' method='POST' style='display: inline;'>";
-                            echo "<input type='hidden' name='comment_id' value='" . $comment['id'] . "'>";
-                            echo "<button type='submit' class='me-3 btn btn-danger' name='deleteComment' " . ($disableButton ? "" : "disabled") . ">Delete</button>";
-                            echo "</form>";
-                            echo "</td>";
-                            echo "</tr>";
-                        }
+                        $disableButton = $comment['user_id'] == $_SESSION['user']['id'];
+                        // " . $_SERVER["PHP_SELF"] . " error go to home apge
+                        echo "<form  method='POST' style='display: inline;'>";
+                        echo "<input type='hidden' name='comment_id' value='" . $comment['id'] . "'>";
+                        echo "<button type='submit' class='me-3 btn btn-primary' name='getComment' " . ($disableButton ? "" : "disabled") . ">
+                         Edit</button>";
+                        echo "</form>";
+
+                        // " . $_SERVER["PHP_SELF"] . " error go to home apge
+                        echo "<form  method='POST' style='display: inline;'>";
+                        echo "<input type='hidden' name='comment_id' value='" . $comment['id'] . "'>";
+                        echo "<button type='submit' class='me-3 btn btn-danger' name='deleteComment' " . ($disableButton ? "" : "disabled") . ">Delete</button>";
+                        echo "</form>";
+                        echo "</td>";
+                        echo "</tr>";
                     }
+
                     ?>
                 </tbody>
             </table>
@@ -90,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getComment'])) {
     </div>
 
     <!-- Create Commment -->
-    <div class="modal modal-lg" id="commentModal" tabindex="-1" aria-labelledby="commentModal" aria-hidden="true">
+    <div class="modal modal-lg" id="commentModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -120,15 +119,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getComment'])) {
     </div>
 
     <!-- Edit Comment -->
-    <div class="modal fade" id="editComment" tabindex="-1" aria-labelledby="editComment" aria-hidden="true">
+    <div class="modal fade" id="editComment" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <?php
-                $result = getCommentByID($_SESSION['comment_id']);
-                print_r($result);
-                ?>
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editComment">Edit Comment</h1>
+                    <h1 class="modal-title fs-5">Edit Comment</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -154,4 +149,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getComment'])) {
             </div>
         </div>
     </div>
+
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if (!empty($result)) : ?>
+            var modalElement = document.getElementById('editComment');
+            var modal = new bootstrap.Modal(modalElement);
+            modal.show();
+
+            modalElement.addEventListener('click', function(event) {
+                if (event.target.classList.contains('btn-close') || event.target.classList.contains('btn-secondary') || event.target.classList.contains('modal')) {
+                    modal.hide();
+                }
+            });
+            document.querySelector('.btn-primary').addEventListener('click', function() {
+                modal.hide();
+            });
+
+        <?php endif; ?>
+    });
+</script>

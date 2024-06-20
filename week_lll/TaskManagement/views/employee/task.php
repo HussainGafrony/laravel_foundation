@@ -12,10 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['deleteTask'])) {
     deleteTask();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['getTask'])) {
-    $task_id = validateInput('task_id');
-    $_SESSION['task_id'] = $task_id;
-}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editTaskStatus'])) {
     editTaskStatus();
@@ -67,9 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editTaskStatus'])) {
                         // Comment
                         echo "<td>";
                         if ($task['status'] != 0 && $task['status'] != 1) {
-                            echo "<form action='' method='POST' style='display: inline;'>";
                             echo "<a href='?p=comment&task_id=" . $task['id'] . "'>See Comment</a>";
-                            echo "</form>";
                         } else {
                             echo "This is not available";
                         }
@@ -78,21 +72,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editTaskStatus'])) {
                         // Status
                         if (getTaskStatus($task['status']) === 'Pending') {
                             echo "<td>";
-                            echo "<select name='status' class='form-select' onchange='showNextOptions(this, " . $task['id'] . ")'>";
+                            echo "<select name='status' class='form-select' onchange='ChangeStatusValue(this, " . $task['id'] . ")'>";
                             echo "<option value='2'>Accept</option>";
                             echo "<option value='4'>Reject</option>";
                             echo "</select>";
                             echo "</td>";
                         } elseif (getTaskStatus($task['status']) === 'Assigned') {
                             echo "<td>";
-                            echo "<select name='status' class='form-select'  onchange='showNextOptions(this, " . $task['id'] . ")'>";
+                            echo "<select name='status' class='form-select'  onchange='ChangeStatusValue(this, " . $task['id'] . ")'>";
                             echo "<option value='3'>In Progress</option>";
                             echo "<option value='5'>Completed</option>";
                             echo "</select>";
                             echo "</td>";
                         } elseif (getTaskStatus($task['status']) === 'In Progress') {
                             echo "<td>";
-                            echo "<select name='status' class='form-select'  onchange='showNextOptions(this, " . $task['id'] . ")'>";
+                            echo "<select name='status' class='form-select'  onchange='ChangeStatusValue(this, " . $task['id'] . ")'>";
                             echo "<option value='3'>In Progress</option>";
                             echo "<option value='5'>Completed</option>";
                             echo "</select>";
@@ -104,14 +98,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editTaskStatus'])) {
                     ?>
                 </tbody>
             </table>
-            <form action="" method="POST">
+            <form action="<?php $_SERVER["PHP_SELF"]  ?>" method="POST">
                 <div class="text-end">
                     <input type="hidden" class="form-control" name="task_id" id="TaskId">
                     <input type="hidden" class="form-control" name="status" id="TaskStatus">
                     <button type='submit' name='editTaskStatus' class='btn btn-primary'>Update Status</button>
                 </div>
             </form>
-
         </div>
     </div>
 
@@ -141,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editTaskStatus'])) {
 
 </main>
 <script>
-    function showNextOptions(selectElement, taskId) {
+    function ChangeStatusValue(selectElement, taskId) {
         var selectValue = selectElement.value;
         if (selectValue == '4') {
             $('#rejectionModal').modal('show');
