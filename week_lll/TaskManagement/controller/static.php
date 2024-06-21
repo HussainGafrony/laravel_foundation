@@ -104,6 +104,42 @@ function getManager($user_id)
         return false;
     }
 }
+
+
+
+function EmployeesByManager($status, $user_id)
+{
+    global $conn;
+    $manager_id = getManager($user_id);
+    if (!$manager_id || !isset($manager_id['id'])) {
+        returnResponse("Error: Manager ID not found for user ID: $user_id.");
+        return false;
+    }
+
+    $sql = "SELECT COUNT(*) AS employee_count
+            FROM users
+            JOIN employees ON employees.user_id = users.id
+            WHERE users.is_active = ? AND employees.manager_id = ?";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        returnResponse("Failed to prepare statement: " . $conn->error);
+        return false;
+    }
+    $stmt->bind_param("ii", $status, $manager_id['id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result === false) {
+        returnResponse("Failed to get result: " . $stmt->error);
+        $stmt->close();
+        return false;
+    }
+    $employees = $result->fetch_assoc();
+    $stmt->close();
+
+    return $employees;
+}
+
 function getTaskCountByManagerAndStatus($user_id, $status)
 {
     global $conn;
@@ -132,38 +168,6 @@ function getTaskCountByManagerAndStatus($user_id, $status)
     return $tasks;
 }
 
-
-
-function EmployeesByManager($status, $user_id)
-{
-    global $conn;
-    $manager_id = getManager($user_id);
-    if (!$manager_id) {
-        returnResponse("Error: Manager ID not found for user ID: $user_id.");
-        return false;
-    }
-
-    $sql = "SELECT COUNT(*) AS employee_count
-        FROM users
-        JOIN user_role ON users.id = user_role.user_id
-        JOIN roless ON user_role.role_id = roless.id
-        JOIN employees ON employees.user_id = users.id
-        WHERE roless.name = 'empolyee' AND users.is_active = ? AND employees.manager_id = ?";
-
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $status, $manager_id['id']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result === false) {
-        returnResponse("Failed to get result: " . $stmt->error);
-        $stmt->close();
-        return false;
-    }
-    $employees = $result->fetch_assoc();
-    $stmt->close();
-
-    return $employees;
-}
 
 
 // Employyee Role

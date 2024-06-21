@@ -4,6 +4,7 @@ include './controller/manager.php';
 
 ?>
 <main id="main" class="main">
+
     <?php
     if (isset($_SESSION['msg'])) {
         echo '<div id="alert" class="alert alert-success w-50 mx-auto" role="alert">';
@@ -42,7 +43,6 @@ include './controller/manager.php';
                             echo "</tr>";
                         }
                     }
-
 
                     ?>
                 </tbody>
