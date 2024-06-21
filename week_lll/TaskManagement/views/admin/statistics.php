@@ -10,10 +10,10 @@ include './controller/static.php';
     $managers_active = getManagers(1);
     $managers_not_active = getManagers(0);
     $employees_active = getEmployees(1);
-    $employees_not_active = getEmployees(0);
+    $employees_suspended = getEmployees(0);
     $employees_disabled = getEmployees(2);
 
-    if (!$tasks_completed || !$tasks_not_assigned || !$managers_active || !$managers_not_active || !$employees_active || !$employees_not_active || !$employees_disabled) {
+    if (!$tasks_completed || !$tasks_not_assigned || !$managers_active || !$managers_not_active || !$employees_active || !$employees_suspended || !$employees_disabled) {
         echo '<div class="alert alert-danger" role="alert">Error retrieving data</div>';
     }
     ?>
@@ -46,7 +46,7 @@ include './controller/static.php';
             <div class="card text-white bg-success mb-3">
                 <div class="card-header">Active Managers</div>
                 <div class="card-body">
-                    <h5 class="card-title"><?= $managers_active['task_count'] ?></h5>
+                    <h5 class="card-title"><?= $managers_active['manager_count'] ?></h5>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@ include './controller/static.php';
             <div class="card text-white bg-danger mb-3">
                 <div class="card-header">Inactive Managers</div>
                 <div class="card-body">
-                    <h5 class="card-title"><?= $managers_not_active['task_count'] ?></h5>
+                    <h5 class="card-title"><?= $managers_not_active['manager_count'] ?></h5>
                 </div>
             </div>
         </div>
@@ -66,15 +66,15 @@ include './controller/static.php';
             <div class="card text-white bg-success mb-3">
                 <div class="card-header">Active Employees</div>
                 <div class="card-body">
-                    <h5 class="card-title"><?= $employees_active['task_count'] ?></h5>
+                    <h5 class="card-title"><?= $employees_active['employee_count'] ?></h5>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card text-white bg-warning mb-3">
-                <div class="card-header">Inactive Employees</div>
+                <div class="card-header">Suspended Employees</div>
                 <div class="card-body">
-                    <h5 class="card-title"><?= $employees_not_active['task_count'] ?></h5>
+                    <h5 class="card-title"><?= $employees_suspended['employee_count'] ?></h5>
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@ include './controller/static.php';
             <div class="card text-white bg-dark mb-3">
                 <div class="card-header">Disabled Employees</div>
                 <div class="card-body">
-                    <h5 class="card-title"><?= $employees_disabled['task_count'] ?></h5>
+                    <h5 class="card-title"><?= $employees_disabled['employee_count'] ?></h5>
                 </div>
             </div>
         </div>
