@@ -60,38 +60,40 @@ if ($task_id) {
                     $tasks = getTasksByManager($_SESSION['user']['id']);
                     if (!$tasks) {
                         returnResponse('hass error when get tasks');
-                    }
-                    foreach ($tasks as $task) {
-                        echo "<tr>";
-                        echo "<td>" . $task['employee_name'] . "</td>";
-                        echo "<td>" . $task['title'] . "</td>";
-                        echo "<td>" . $task['description'] . "</td>";
-                        echo "<td>" . getTaskStatus($task['status']) . "</td>";
-                        echo "<td>" . $task['rejected_reason'] . "</td>";
-                        echo "<td>" . $task['created_at'] . "</td>";
-                        echo "<td>";
-                        // Comment
-                        echo "<form action='' method='POST' style='display: inline;'>";
-                        echo "<button type='submit' class='me-3 btn'><a href='?p=comment&task_id=" . $task['id'] . "' >See Comment</a> </button>";
-                        echo "</form>";
-                        echo "</td>";
+                    } else {
+                        foreach ($tasks as $task) {
+                            echo "<tr>";
+                            // echo "<td>" . $task['employee_name'] == null ? 'null' : $task['employee_name']  . "</td>";
+                            echo "<td>" . ($task['employee_name'] == null ? 'Not Selecet' : $task['employee_name']) . "</td>";
 
-                        echo "<td>";
+                            echo "<td>" . $task['title'] . "</td>";
+                            echo "<td>" . $task['description'] . "</td>";
+                            echo "<td>" . getTaskStatus($task['status']) . "</td>";
+                            echo "<td>" . $task['rejected_reason'] . "</td>";
+                            echo "<td>" . $task['created_at'] . "</td>";
+                            echo "<td>";
+                            // Comment
+                            echo "<form action='' method='POST' style='display: inline;'>";
+                            echo "<button type='submit' class='me-3 btn'><a href='?p=comment&task_id=" . $task['id'] . "' >See Comment</a> </button>";
+                            echo "</form>";
+                            echo "</td>";
 
-                        // " . $_SERVER["PHP_SELF"] . "
-                        // action='' has error when delete task this going in index page
-                        echo "<form action='' method='POST' style='display: inline;'>";
-                        echo "<input type='hidden' name='task_id' value='" . $task['id'] . "'>";
-                        echo "<button type='submit' class=' me-3 btn btn-danger' name='deleteTask'>Delete</button>";
-                        echo "</form>";
+                            echo "<td>";
 
-                        echo "<form action='' method='POST' style='display: inline;'>";
-                        echo "<input type='hidden' name='task_id' value='" . $task['id'] . "'>";
-                        echo "<button type='submit' class='me-3 btn btn-primary'>Edit</button>";
-                        echo "</form>";
+                            // " . $_SERVER["PHP_SELF"] . "
+                            // action='' has error when delete task this going in index page
+                            echo "<form action='' method='POST' style='display: inline;'>";
+                            echo "<input type='hidden' name='task_id' value='" . $task['id'] . "'>";
+                            echo "<button type='submit' class=' me-3 btn btn-danger' name='deleteTask'>Delete</button>";
+                            echo "</form>";
 
-                        echo "</td>";
-                        echo "</tr>";
+                            echo "<form action='' method='POST' style='display: inline;'>";
+                            echo "<input type='hidden' name='task_id' value='" . $task['id'] . "'>";
+                            echo "<button type='submit' class='me-3 btn btn-primary'>Edit</button>";
+                            echo "</form>";
+                            echo "</td>";
+                            echo "</tr>";
+                        }
                     }
                     ?>
                 </tbody>
@@ -140,16 +142,16 @@ if ($task_id) {
                             </label>
                             <div class="col-md-8 col-lg-5">
                                 <?php
-                                $disabled = ($result['status'] == 1 || $result['status'] >= 1) ? 'disabled' : '';
+                                $status = $result['status'];
+                                $disabled = ($status > 1) ? 'disabled' : '';
                                 ?>
 
-                                <select class="form-select" name="status">
+                                <select class="form-select" name="status" <?php echo $disabled; ?>>
                                     <?php
-                                    $status = $result['status'];
                                     $statuses = [0, 1, 2, 3, 4, 5];
                                     foreach ($statuses as $value) {
                                         $selected = ($status == $value) ? 'selected' : '';
-                                        echo '<option value="' . $value . '" ' . $selected . '>' . getTaskStatus($value) . '</option>';
+                                        echo '<option value="' . $value . '" ' . $selected . ' >' . getTaskStatus($value) . '</option>';
                                     }
                                     ?>
                                 </select>
@@ -224,12 +226,12 @@ if ($task_id) {
                                 <input name="description" type="text" class="form-control" required>
                             </div>
                         </div>
-                        <div class="row mb-3">
+                        <!-- <div class="row mb-3">
                             <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">rejected_reason</label>
                             <div class="col-md-8 col-lg-9 input-container">
                                 <input name="rejected_reason" type="text" class="form-control">
                             </div>
-                        </div>
+                        </div> -->
                         <div class="row mb-3">
                             <label for="role" class="col-md-4 col-lg-3 col-form-label">Task Status
                             </label>
@@ -273,7 +275,7 @@ if ($task_id) {
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" name="createTask">Save</button>
+                            <button type="submit" class="btn btn-primary" name="createTask" data-bs-dismiss="modal">Save</button>
                         </div>
                     </form>
                     <!-- Form End -->
@@ -285,6 +287,7 @@ if ($task_id) {
 </main>
 
 <script>
+    // when click open 
     document.addEventListener('DOMContentLoaded', function() {
         <?php if (!empty($result)) : ?>
             var modalElement = document.getElementById('edit');

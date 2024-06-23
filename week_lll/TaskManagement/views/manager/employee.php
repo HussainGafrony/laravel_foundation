@@ -53,29 +53,30 @@ if ($user_id) {
                             $employees = getEmployeesByManager($_SESSION['user']['id']);
                             if (!$employees) {
                                 returnResponse('hass error when getEmployeesByManager');
-                            }
-                            foreach ($employees as $employee) {
-                                echo "<tr>";
-                                echo "<td>" . $employee['name'] . "</td>";
-                                echo "<td>" . $employee['phone_number'] . "</td>";
-                                echo "<td>" . $employee['birthdate'] . "</td>";
-                                echo "<td>" . $employee['email'] . "</td>";
-                                echo "<td>" . $employee['is_active'] . "</td>";
-                                echo "<td>" . $employee['created_at'] . "</td>";
-                                echo "<td>";
-                                // " . $_SERVER["PHP_SELF"] . "
-                                // action='' has error when delete employee this going in index page
-                                echo "<form action='' method='POST' style='display: inline;'>";
-                                echo "<input type='hidden' name='user_id' value='" . $employee['user_id'] . "'>";
-                                echo "<button type='submit' class=' me-3 btn btn-danger' name='deleteEmployee'>Delete</button>";
-                                echo "</form>";
+                            } else {
+                                foreach ($employees as $employee) {
+                                    echo "<tr>";
+                                    echo "<td>" . $employee['name'] . "</td>";
+                                    echo "<td>" . $employee['phone_number'] . "</td>";
+                                    echo "<td>" . $employee['birthdate'] . "</td>";
+                                    echo "<td>" . $employee['email'] . "</td>";
+                                    echo "<td>" . $employee['is_active'] . "</td>";
+                                    echo "<td>" . $employee['created_at'] . "</td>";
+                                    echo "<td>";
+                                    // " . $_SERVER["PHP_SELF"] . "
+                                    // action='' has error when delete employee this going in index page
+                                    echo "<form action='' method='POST' style='display: inline;'>";
+                                    echo "<input type='hidden' name='user_id' value='" . $employee['user_id'] . "'>";
+                                    echo "<button type='submit' class=' me-3 btn btn-danger' name='deleteEmployee'>Delete</button>";
+                                    echo "</form>";
 
-                                echo "<form action='' method='POST' style='display: inline;'>";
-                                echo "<input type='hidden' name='user_id' value='" . $employee['user_id'] . "'>";
-                                echo "<button type='submit' class='me-3 btn btn-primary'>Edit</button>";
-                                echo "</form>";
-                                echo "</td>";
-                                echo "</tr>";
+                                    echo "<form action='' method='POST' style='display: inline;'>";
+                                    echo "<input type='hidden' name='user_id' value='" . $employee['user_id'] . "'>";
+                                    echo "<button type='submit' class='me-3 btn btn-primary'>Edit</button>";
+                                    echo "</form>";
+                                    echo "</td>";
+                                    echo "</tr>";
+                                }
                             }
                             ?>
                         </tbody>
@@ -145,18 +146,16 @@ if ($user_id) {
                         </div>
 
                         <div class="row mb-3">
-                            <label for="role" class="col-md-4 col-lg-4 col-form-label">Manager </label>
+                            <?php
+                            $manager = getManager($_SESSION['user']['id']);
+                            if (!$manager) {
+                                returnResponse('hass error when get managers');
+                            }
+                            ?>
+
+                            <!-- <label for="role" class="col-md-4 col-lg-4 col-form-label">Manager </label> -->
                             <div class="col-md-8 col-lg-5">
-                                <select class="form-select" name="manager_id">
-                                    <?php
-                                    $manager = getManager($_SESSION['user']['id']);
-                                    if (!$manager) {
-                                        returnResponse('hass error when get managers');
-                                    }
-                                    print_r($managers);
-                                    echo "<option value='" . $manager['id'] . "'>" . $manager['name'] . "</option>";
-                                    ?>
-                                </select>
+                                <input name="manager_id" type="hidden" class="form-control" value="<?= $manager['id']  ?>">
                             </div>
                         </div>
 
