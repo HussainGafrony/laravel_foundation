@@ -287,7 +287,6 @@ if ($task_id) {
 </main>
 
 <script>
-    // when click open 
     document.addEventListener('DOMContentLoaded', function() {
         <?php if (!empty($result)) : ?>
             var modalElement = document.getElementById('edit');
@@ -299,10 +298,14 @@ if ($task_id) {
                     modal.hide();
                 }
             });
-            document.querySelector('.btn-primary').addEventListener('click', function() {
-                modal.hide();
-            });
 
+            document.querySelector('.btn-primary').addEventListener('click', function() {
+                if (modal) {
+                    modal.hide();
+                }
+            });
         <?php endif; ?>
+
+
     });
 </script>

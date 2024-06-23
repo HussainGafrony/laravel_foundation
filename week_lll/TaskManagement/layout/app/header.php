@@ -46,7 +46,7 @@ include './function.php'
                 <span class="d-none d-lg-block  font-weight-light fs-4">Welcome <b class="fs-3 text-black opacity-50">
                         <?php
                         if ($_SESSION['user']['role_name'] === null) {
-                            returnResponse('Please login', true);
+                            header('Location: views/login.php');
                         } else {
                             echo $_SESSION['user']['role_name'];
                         }
