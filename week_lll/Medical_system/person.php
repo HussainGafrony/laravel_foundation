@@ -2,8 +2,8 @@
 
 abstract class Person
 {
-    public $name;
-    public $age;
+    protected $name;
+    protected $age;
 
     public function __construct($name, $age)
     {
@@ -23,8 +23,8 @@ abstract class Person
 
 class Doctor extends Person
 {
-    public $salary;
-    public $job;
+    protected $salary;
+    protected $job;
 
     public function __construct($name, $age, $salary, $job)
     {
